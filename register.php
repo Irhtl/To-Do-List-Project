@@ -1,42 +1,23 @@
-<?php
-include "../config/database.php";
-$username= trim($_POST["username"]);
-$email= trim($_POST["email"]);
-$password= $_POST["password"];
-$confirm_password= $_POST ["confirm_password"];
-
-if (empty($username)|| empty($email) || empty($password) || empty($confirm_password)) {die("لطفا همه فیلد ها را پر کنید");}
-
-if($password !=$confirm_password){die("رمز عبور و تکرار آن یکسان نیست");}
-
-$sql = "select * from users where username=? or email=?";
-$stmt= $conn->prepare($sql);
-$stmt->bind_param("ss",$username,$email);
-$stmt->execute();
-
-$result= $stmt->get_result();
-
-if ($result->num_rows>0){die("نام کاربری یا ایمیل قبلا ثبت شده است");}
-
-$hashedPassword= password_hash($password,PASSWORD_DEFAULT);
-$sql= "insert into users(username, email, password) values(?,?,?)";
-$stmt= $conn->prepare($sql);
-$stmt->bind_param("sss",$username,$email,$hashedPassword);
-
-if ($stmt->execute()) {
-
-    session_start();
-
-    $_SESSION["user_id"] = $conn->insert_id;
-    $_SESSION["username"] = $username;
-
-    header("Location: ../dashboard.php");
-    exit();
-
-} else {
-
-    echo "خطا در ثبت نام";
-
-}
-$stmt->close();
-$conn->close();
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <title> ثبت نام </title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="login-container">
+        <h2> ثبت نام </h2>
+        <form action="actions/register.php" method="POST">
+        <input type="text" name="username" placeholder="نام کاربری " required>
+        <input type="email" name="email" placeholder="ایمیل" required>
+        <input type="password" name="password" placeholder=" رمز عبور " required>
+        <input type="password" name="confirm_password" placeholder="تکرار رمز عبور " required>
+        <button type="submit"> ثبت نام </button>
+        </form>
+        <p>
+            <a href="index.php"> قبلا ثبت نام کرده اید؟ </a>
+        </p>
+    </div>
+</body>
+</html>

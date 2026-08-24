@@ -1,44 +1,52 @@
-<?php
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ورود</title>
 
-session_start();
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
 
-include "../config/database.php";
+<div class="login-container">
 
-$email=
-trim($_POST["email"]);
-$password=
-$_POST["password"];
+    <div class="login-icon">
+       <i class="fas fa-user-circle"></i>
+    </div>
 
-if (empty($email)||
-empty($password)){
-    die("لطفا همه فیلد ها را پر کنید");
-   }
-$sql="select * from users where email=?";
+    <h2>ورود به حساب کاربری</h2>
 
-$stmt=
-$conn->prepare($sql);
-$stmt->bind_param("s",
-$email);
-$stmt->execute();
+    <form action="actions/login.php" method="POST">
 
-$result=
-$stmt->get_result();
+        <input
+            type="email"
+            name="email"
+            placeholder="ایمیل"
+            required
+        >
 
-if ($result->num_rows == 1)
-{
-    $user=
-    $result->fetch_assoc();
-                            if (password_verify($password,$user["password"])){
-                                $_SESSION["user_id"]=
-                                $user["id"];
-                                $_SESSION["username"]=
-                                $user["username"];
-                                header("location: ../dashboard.php");
-                                exit();} 
-                                        else { die("رمز عبور اشتباه است");
-                                        } 
-}
-      else { die("کاربری با این ایمیل پیدا نشد");}
-$stmt->close();
-$conn->close();
-?>
+        <input
+            type="password"
+            name="password"
+            placeholder="رمز عبور"
+            required
+        >
+
+        <button type="submit">
+            ورود
+        </button>
+
+    </form>
+
+    <p>
+        حساب ندارید؟
+        <a href="register.php">ثبت نام</a>
+    </p>
+
+</div>
+
+</body>
+</html>
